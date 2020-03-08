@@ -11,6 +11,10 @@ bool init(){
 	if(win==NULL){
 		return false;
 	}
+	ren=SDL_CreateRenderer(win,-1,SDL_RENDERER_ACCELERATED);
+	if(ren==NULL){
+		return false;
+	}
 	return true;
 }
 void close(){
@@ -37,6 +41,23 @@ void event(){
 void render(){
 	SDL_SetRenderDrawColor(ren,0xFF,0xFF,0xFF,0xFF);
 	SDL_RenderClear(ren);
+
+	SDL_Rect r1={170,140,300,200};
+	SDL_SetRenderDrawColor(ren,0xFF,0,0,0xFF);
+	SDL_RenderFillRect(ren,&r1);
+
+	SDL_Rect r2={70,90,500,300};
+	SDL_SetRenderDrawColor(ren,0,0,0xFF,0xFF);
+	SDL_RenderDrawRect(ren,&r2);
+
+	SDL_SetRenderDrawColor(ren,0,0xFF,0,0xFF);
+	SDL_RenderDrawLine(ren,0,240,640,240);
+
+	SDL_SetRenderDrawColor(ren,0,0,0,0xFF);
+	for(int i=0;i<480;i+=6){
+		SDL_RenderDrawPoint(ren,320,i);
+	}
+
 	SDL_RenderPresent(ren);
 }
 int main(int argc,char**argv){

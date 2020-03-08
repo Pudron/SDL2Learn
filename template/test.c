@@ -11,6 +11,10 @@ bool init(){
 	if(win==NULL){
 		return false;
 	}
+	ren=SDL_CreateRenderer(win,-1,SDL_RENDERER_ACCELERATED);
+	if(ren==NULL){
+		return false;
+	}
 	return true;
 }
 void close(){
