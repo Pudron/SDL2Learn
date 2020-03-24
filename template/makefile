@@ -1,2 +1,2 @@
 test:test.c
-	gcc -Wall -O2 -g `pkg-config --cflags sdl2` test.c -o test `pkg-config --libs sdl2`
+	gcc -Wall -O2 -g `sdl2-config --cflags` test.c -o test `sdl2-config --libs`

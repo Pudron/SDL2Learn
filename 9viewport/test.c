@@ -1,17 +1,18 @@
 #include<SDL2/SDL.h>
 #include<stdbool.h>
 bool isRun=true;
+int w=640,h=480;
 SDL_Window*win=NULL;
 SDL_Renderer*ren=NULL;
+void render();
 bool init(){
 	if(SDL_Init(SDL_INIT_VIDEO)<0){
 		return false;
 	}
-	win=SDL_CreateWindow("Test",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,SDL_WINDOW_SHOWN|SDL_WINDOW_ALWAYS_ON_TOP|SDL_WINDOW_BORDERLESS);
+	win=SDL_CreateWindow("Test",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,w,h,SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
 	if(win==NULL){
 		return false;
 	}
-	//SDL_SetWindowOpacity(win,0.5);
 	ren=SDL_CreateRenderer(win,-1,SDL_RENDERER_ACCELERATED);
 	if(ren==NULL){
 		return false;
@@ -31,36 +32,37 @@ void event(){
 	SDL_Event e;
 	if(SDL_PollEvent(&e)){
 		switch(e.type){
-			case SDL_MOUSEBUTTONDOWN:
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,"Draw","I am about to quit",win);
 			case SDL_QUIT:
 				isRun=false;
 				break;
+			case SDL_WINDOWEVENT:
+				if(e.window.event==SDL_WINDOWEVENT_RESIZED){
+					SDL_GetWindowSize(win,&w,&h);
+				}
 			default:
 				break;
 		}
 	}
 }
-void render(){
-	SDL_SetRenderDrawColor(ren,0xFF,120,120,50);
-	SDL_RenderClear(ren);
-
-	SDL_Rect r1={170,140,300,200};
+void draw(){
+	SDL_Rect r1={w/4,h/4,w/2,h/2};
 	SDL_SetRenderDrawColor(ren,0xFF,0,0,0xFF);
 	SDL_RenderFillRect(ren,&r1);
 
-	SDL_Rect r2={70,90,500,300};
+	SDL_Rect r2={w/6,h/6,w*2/3,h*2/3};
 	SDL_SetRenderDrawColor(ren,0,0,0xFF,0xFF);
 	SDL_RenderDrawRect(ren,&r2);
-
-	SDL_SetRenderDrawColor(ren,0,0xFF,0,0xFF);
-	SDL_RenderDrawLine(ren,0,240,640,240);
-
-	SDL_SetRenderDrawColor(ren,0,0,0,0xFF);
-	for(int i=0;i<480;i+=6){
-		SDL_RenderDrawPoint(ren,320,i);
-	}
-
+}
+void render(){
+	SDL_SetRenderDrawColor(ren,0xFF,0xFF,0xFF,0xFF);
+	SDL_RenderClear(ren);
+	
+	SDL_Rect viewp={0,0,w/2,h/2};
+	SDL_RenderSetViewport(ren,&viewp);
+	draw();
+	SDL_Rect v2={w/2,h/2,w/2,h/2};
+	SDL_RenderSetViewport(ren,&v2);
+	draw();
 	SDL_RenderPresent(ren);
 }
 int main(int argc,char**argv){

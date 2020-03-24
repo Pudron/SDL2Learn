@@ -3,15 +3,15 @@
 bool isRun=true;
 SDL_Window*win=NULL;
 SDL_Renderer*ren=NULL;
+SDL_Rect rect={100,100,100,100};
 bool init(){
 	if(SDL_Init(SDL_INIT_VIDEO)<0){
 		return false;
 	}
-	win=SDL_CreateWindow("Test",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,SDL_WINDOW_SHOWN|SDL_WINDOW_ALWAYS_ON_TOP|SDL_WINDOW_BORDERLESS);
+	win=SDL_CreateWindow("Test",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,SDL_WINDOW_SHOWN);
 	if(win==NULL){
 		return false;
 	}
-	//SDL_SetWindowOpacity(win,0.5);
 	ren=SDL_CreateRenderer(win,-1,SDL_RENDERER_ACCELERATED);
 	if(ren==NULL){
 		return false;
@@ -28,39 +28,40 @@ void close(){
 	SDL_Quit();
 }
 void event(){
+	int speed=1;
 	SDL_Event e;
 	if(SDL_PollEvent(&e)){
 		switch(e.type){
-			case SDL_MOUSEBUTTONDOWN:
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,"Draw","I am about to quit",win);
 			case SDL_QUIT:
 				isRun=false;
 				break;
+			case SDL_KEYDOWN:
+				switch(e.key.keysym.sym){
+					case SDLK_a:
+						rect.x-=speed;
+						break;
+					case SDLK_d:
+						rect.x+=speed;
+						break;
+					case SDLK_w:
+						rect.y-=speed;
+						break;
+					case SDLK_s:
+						rect.y+=speed;
+						break;
+					default:
+						break;
+				}
 			default:
 				break;
 		}
 	}
 }
 void render(){
-	SDL_SetRenderDrawColor(ren,0xFF,120,120,50);
+	SDL_SetRenderDrawColor(ren,0xFF,0xFF,0xFF,0xFF);
 	SDL_RenderClear(ren);
-
-	SDL_Rect r1={170,140,300,200};
 	SDL_SetRenderDrawColor(ren,0xFF,0,0,0xFF);
-	SDL_RenderFillRect(ren,&r1);
-
-	SDL_Rect r2={70,90,500,300};
-	SDL_SetRenderDrawColor(ren,0,0,0xFF,0xFF);
-	SDL_RenderDrawRect(ren,&r2);
-
-	SDL_SetRenderDrawColor(ren,0,0xFF,0,0xFF);
-	SDL_RenderDrawLine(ren,0,240,640,240);
-
-	SDL_SetRenderDrawColor(ren,0,0,0,0xFF);
-	for(int i=0;i<480;i+=6){
-		SDL_RenderDrawPoint(ren,320,i);
-	}
-
+	SDL_RenderFillRect(ren,&rect);
 	SDL_RenderPresent(ren);
 }
 int main(int argc,char**argv){
